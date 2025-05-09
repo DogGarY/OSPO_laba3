@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body id="id_body">
+        <script>
+            var your_age;
+            var your_name;
+            var your_surname;
+            if (confirm('Доброго времени суток, это страница для создания резюме, вы готовы его заполнить?'))
+            {
+                var b_age = false;
+                var b_name = false;
+                var b_surname = false;
+                while (!b_age)
+                {
+                    your_age = prompt('Сколько вам лет?','Введите сюда ваш возраст');
+                    b_age = confirm('Вы уверены, что вам ' + your_age + '?');
+                }
+                while (!b_name)
+                {
+                    your_name = prompt('Введите ваше имя: ','Введите сюда ваше имя');
+                    b_name = confirm('Вы уверены, что ваше имя ' + your_name + '?');
+                }
+                while (!b_surname)
+                {
+                    your_surname = prompt('Введите вашу фамилию: ','Введите сюда вашу фамилию');
+                    b_surname = confirm('Вы уверены, что ваша фамилия ' + your_surname + '?');
+                }
+            }
+            alert("Спасибо, что уделили время")
+        </script>
+
+        <h1>Ваше резюме</h1>
+
+        <p id="id_name">Имя.</p>
+
+        <p id="id_surname">Фамилия.</p>
+
+        <p id="id_age">Возраст.</p>
+
+        <img class="image" src="https://novgorodskij-r49.gosweb.gosuslugi.ru/netcat_files/9/260/user_test.png">
+        <br/>
+        <br/>
+
+        <label>
+            Изменить фамилию:
+            <input type="text" id="another_surname">
+        </label>
+
+        <button onclick="
+            your_surname = getElementById('another_surname').value;
+            showSurname();
+        ">
+            Принять
+        </button>
+        <br/>
+        <br/>
+
+        <button onclick="
+            randomColor();
+        ">
+            Изменить цвет фона
+        </button>
+
+        <script>
+            function showName()
+            {
+                document.getElementById('id_name').innerText = your_name;
+            }
+
+            function showSurname()
+            {
+                document.getElementById('id_surname').innerText = your_surname;
+            }
+
+            function showAge()
+            {
+                document.getElementById('id_age').innerText = your_age;
+            }
+
+            function randomColor()
+            {
+                var color = "#";
+                var letters = ['EAF785','0BE796','C9DABE','8BC1A6','FFFFFF','8B9E7C', 'C7E3D5'];
+                color += letters[Math.floor(Math.random()*letters.length)];
+                document.getElementById('id_body').style.background = color;
+            }
+
+            showName();
+            showSurname();
+            showAge();
+        </script>
+
+        <style>
+            body 
+            {
+                font-family: sans-serif;
+                font-size: 1.1em;
+                text-shadow: 2px 2px 3px #151719;
+                color: #000000;
+                border: 1px solid #000000;
+                padding: 1.1em 1.1em 1.1em 1.1em;
+            }
+
+            p:hover
+            {
+                background-color: darkgrey;
+            }
+
+            .image
+            {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 256px;
+                max-height: 256px;
+                border: 1px solid #000000;
+            }
+        </style>
+    </body>
+</html>

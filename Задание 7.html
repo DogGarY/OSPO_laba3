@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор и Индикатор</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #e6f0fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      scroll-behavior: smooth;
+    }
+
+    h1 {
+      margin-top: 2rem;
+      text-align: center;
+      width: 100%;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 90%;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      border: 2px solid #cde;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease-out;
+    }
+
+    .container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .calc-inputs, .keyboard {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    input[type="number"], .output {
+      flex: 1;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .output {
+      background-color: #eaeaea;
+      transition: background-color 0.3s;
+    }
+
+    button {
+      flex: 1 0 30%;
+      padding: 1rem;
+      margin: 0.25rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      background: #007BFF;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .range-output {
+      text-align: center;
+      font-size: 1.2rem;
+      background: #eaeaea;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .gauge {
+      position: relative;
+      width: 200px;
+      height: 100px;
+      margin: 2rem auto;
+    }
+
+    .gauge::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 100px 100px 0 0;
+      background: #ddd;
+    }
+
+    .needle {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      height: 90px;
+      background: red;
+      transform-origin: bottom center;
+      transform: rotate(0deg);
+      transition: transform 0.4s ease;
+    }
+
+    .selected-input {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .center-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 500px) {
+      .keyboard button {
+        flex: 1 0 28%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Калькулятор и Индикатор</h1>
+
+  <!-- Калькулятор -->
+  <div class="container" id="calculator">
+    <h2>Калькулятор</h2>
+    <div class="selected-input" id="selectedInput">Ввод: Число 1</div>
+    <div class="calc-inputs">
+      <input type="number" id="num1" placeholder="Число 1">
+      <input type="number" id="num2" placeholder="Число 2">
+      <select id="operator">
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+      </select>
+    </div>
+    <div class="keyboard">
+      <button onclick="appendToInput(1)">1</button>
+      <button onclick="appendToInput(2)">2</button>
+      <button onclick="appendToInput(3)">3</button>
+      <button onclick="appendToInput(4)">4</button>
+      <button onclick="appendToInput(5)">5</button>
+      <button onclick="appendToInput(6)">6</button>
+      <button onclick="appendToInput(7)">7</button>
+      <button onclick="appendToInput(8)">8</button>
+      <button onclick="appendToInput(9)">9</button>
+      <button onclick="appendToInput(0)">0</button>
+    </div>
+    <div class="center-buttons">
+      <button onclick="toggleInput()">Переключить ввод</button>
+      <button onclick="calculate()">Посчитать</button>
+      <button onclick="clearInputs()">Очистить</button> <!-- Кнопка для очистки -->
+    </div>
+    <div class="output" id="calcResult">Ответ</div>
+  </div>
+
+  <!-- Индикатор -->
+  <div class="container" id="indicator">
+    <h2>Индикатор</h2>
+    <div class="gauge">
+      <div class="needle" id="needle"></div>
+    </div>
+    <div class="range-output" id="rangeValue">0</div>
+    <div class="keyboard">
+      <button onclick="updateIndicator(1)">1</button>
+      <button onclick="updateIndicator(2)">2</button>
+      <button onclick="updateIndicator(3)">3</button>
+      <button onclick="updateIndicator(4)">4</button>
+      <button onclick="updateIndicator(5)">5</button>
+      <button onclick="updateIndicator(6)">6</button>
+      <button onclick="updateIndicator(7)">7</button>
+      <button onclick="updateIndicator(8)">8</button>
+      <button onclick="updateIndicator(9)">9</button>
+      <button onclick="updateIndicator(0)">0</button>
+    </div>
+  </div>
+
+  <script>
+    let currentInput = 1;
+
+    function calculate() {
+      const num1 = parseFloat(document.getElementById('num1').value);
+      const num2 = parseFloat(document.getElementById('num2').value);
+      const operator = document.getElementById('operator').value;
+      const resultEl = document.getElementById('calcResult');
+      let result;
+
+      switch (operator) {
+        case '+': result = num1 + num2; break;
+        case '-': result = num1 - num2; break;
+        case '*': result = num1 * num2; break;
+        case '/': result = num2 !== 0 ? num1 / num2 : 'Ошибка'; break;
+      }
+
+      if (typeof result === 'number' && result > 15) {
+        resultEl.textContent = result + ' > 15';
+        resultEl.style.backgroundColor = '#f88';
+      } else {
+        resultEl.textContent = result;
+        resultEl.style.backgroundColor = '#eaeaea';
+      }
+    }
+
+    function toggleInput() {
+      currentInput = currentInput === 1 ? 2 : 1;
+      document.getElementById('selectedInput').textContent = `Ввод: Число ${currentInput}`;
+    }
+
+    function appendToInput(num) {
+      const input = document.getElementById(currentInput === 1 ? 'num1' : 'num2');
+      input.value += num;
+    }
+
+    function clearInputs() {
+      document.getElementById('num1').value = '';
+      document.getElementById('num2').value = '';
+      document.getElementById('calcResult').textContent = 'Ответ';
+      document.getElementById('calcResult').style.backgroundColor = '#eaeaea';
+    }
+
+    function updateIndicator(value) {
+      const display = document.getElementById('rangeValue');
+      const needle = document.getElementById('needle');
+      const angle = (value / 10) * 180 - 90;
+      needle.style.transform = `rotate(${angle}deg)`;
+      display.textContent = value;
+      display.style.backgroundColor = value > 5 ? '#f88' : '#eaeaea';
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+
+    document.querySelectorAll('.container').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

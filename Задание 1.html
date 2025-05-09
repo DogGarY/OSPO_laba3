@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <script>
+            function calcD(a, b, c)
+            {
+                alert("Дискриминант: " + b*b - 4*a*c);
+            }
+
+            function min(a, b)
+            {
+                if (a<b)
+                    alert("Минимум: " + a);
+                else
+                    alert("Минимум: " + b);
+            }
+
+            function max(a,b)
+            {
+                if (a>b)
+                    alert("Максимум: " + a);
+                else
+                    alert("Максимум: " + b);
+            }
+
+            function equal(a,b)
+            {
+                if (a==b)
+                    alert(a + "и " + b + "равны");
+                else
+                    alert(a + "и " + b + "не равны");
+            }
+        </script>
+
+        <label>
+            Введите a:
+            <input type="number" id="a">
+        </label>
+        <br/>
+
+        <label>
+            Введите b:
+            <input type="number" id="b">
+        </label>
+        <br/>
+
+        <label>
+            Введите c:
+            <input type="number" id="c">
+        </label>
+        <br/>
+
+        <button onclick="
+            var a = getElementById('a').value;
+            var b = getElementById('b').value;
+            var c = getElementById('c').value;
+            calcD(a,b,c);
+        ">
+            calcD(a,b,c)
+        </button>
+        <br/>
+
+        <button onclick="
+            var a = getElementById('a').value;
+            var b = getElementById('b').value;
+            min(a,b);
+        ">
+            min(a,b)
+        </button>
+        <br/>
+
+        <button onclick="
+            var a = getElementById('a').value;
+            var b = getElementById('b').value;
+            max(a,b);
+        ">
+            max(a,b)
+        </button>
+        <br/>
+
+        <button onclick="
+            var a = getElementById('a').value;
+            var b = getElementById('b').value;
+            equal(a,b);
+        ">
+            equal(a,b)
+        </button>
+        <br/>
+    </body>
+</html>
